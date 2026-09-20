@@ -7,8 +7,9 @@ const resetBtn = document.getElementById('reset-btn');
 
 let intervalId = null;
 let isRunning = false;
-let startTime = null; // performance.now() when the timer last started/resumed
-let elapsedSeconds = 0; // total seconds counted so far (persists across pauses)
+let startTime = null; // performance.now() when the current running segment began
+let baseSeconds = 0; // seconds accumulated from completed running segments (before this resume)
+let elapsedSeconds = 0; // baseSeconds + time elapsed in the current running segment
 let lastAnnouncedSecond = 0; // last elapsed second at which an announcement played
 let announceIntervalSeconds = Number(intervalSelect.value);
 
@@ -40,7 +41,7 @@ function announce(totalSeconds) {
 
 function tick() {
   const now = performance.now();
-  const newElapsedSeconds = elapsedSeconds + Math.floor((now - startTime) / 1000);
+  const newElapsedSeconds = baseSeconds + Math.floor((now - startTime) / 1000);
 
   if (newElapsedSeconds !== elapsedSeconds) {
     elapsedSeconds = newElapsedSeconds;
@@ -70,6 +71,7 @@ function startTimer() {
 function stopTimer() {
   if (!isRunning) return;
   isRunning = false;
+  baseSeconds = elapsedSeconds; // bank the current total so a later resume continues from here
   clearInterval(intervalId);
   intervalId = null;
   startBtn.disabled = false;
@@ -79,6 +81,7 @@ function stopTimer() {
 function resetTimer() {
   stopTimer();
   if (window.speechSynthesis) speechSynthesis.cancel();
+  baseSeconds = 0;
   elapsedSeconds = 0;
   lastAnnouncedSecond = 0;
   updateDisplay();
