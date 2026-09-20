@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interval Timer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page">
+    <h1>Interval Timer</h1>
+    <div class="timer-card">
+      <div class="timer-display">
+        <strong id="elapsed">00:00</strong>
+        <span id="interval-note">Announces every 5 seconds</span>
+      </div>
+
+      <div class="interval-picker">
+        <label for="interval-select">Announce every</label>
+        <select id="interval-select">
+          <option value="5" selected>5 seconds</option>
+          <option value="10">10 seconds</option>
+          <option value="15">15 seconds</option>
+          <option value="30">30 seconds</option>
+          <option value="60">60 seconds</option>
+        </select>
+      </div>
+
+      <div class="controls">
+        <button id="start-btn" class="toggle">Start</button>
+        <button id="stop-btn" class="secondary" disabled>Stop</button>
+        <button id="reset-btn" class="secondary">Reset</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
