@@ -42,18 +42,14 @@ function tick() {
   const now = performance.now();
   const newElapsedSeconds = elapsedSeconds + Math.floor((now - startTime) / 1000);
 
-  if (newElapsedSeconds > lastAnnouncedSecond) {
-    for (let second = lastAnnouncedSecond + 1; second <= newElapsedSeconds; second++) {
-      if (second % announceIntervalSeconds === 0) {
-        announce(second);
-      }
-    }
-    lastAnnouncedSecond = newElapsedSeconds;
-  }
-
   if (newElapsedSeconds !== elapsedSeconds) {
     elapsedSeconds = newElapsedSeconds;
     updateDisplay();
+  }
+
+  if (elapsedSeconds > lastAnnouncedSecond && elapsedSeconds % announceIntervalSeconds === 0) {
+    lastAnnouncedSecond = elapsedSeconds;
+    announce(elapsedSeconds);
   }
 }
 
@@ -61,9 +57,10 @@ function startTimer() {
   if (isRunning) return;
   isRunning = true;
   startTime = performance.now();
-  // Speak a silent-ish placeholder on the user gesture to unlock speech synthesis on iOS Safari.
+  // Speak on the user gesture to unlock speech synthesis on iOS Safari.
+  // An empty-string utterance can leave Safari's speech queue stuck, so use real text.
   if (window.speechSynthesis && elapsedSeconds === 0 && lastAnnouncedSecond === 0) {
-    speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+    speechSynthesis.speak(new SpeechSynthesisUtterance('Timer started'));
   }
   intervalId = setInterval(tick, 200);
   startBtn.disabled = true;
